@@ -1,5 +1,5 @@
 from django.core.management.base import BaseCommand
-from config.apps.stocks.models import Company
+from apps.stocks.models import Company
 
 
 COMPANIES = [
