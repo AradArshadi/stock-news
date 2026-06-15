@@ -45,9 +45,14 @@
 <section class="panel">
     <div class="panel-header">
         <h2>{{ symbol }} price chart</h2>
-        <a class="email-button" href="?symbol={{ symbol }}&company_name={{ company_name|urlencode }}&send_email=1">Send email alert</a>
+        <a class="email-button" href="?symbol={{ symbol }}&company_name={{ company_name|urlencode }}&send_email=1">
+            Send email alert
+        </a>
     </div>
-    <canvas id="stockChart"></canvas>
+
+    <div class="chart-wrapper">
+        <canvas id="stockChart"></canvas>
+    </div>
 </section>
 
 <section class="grid">
@@ -77,7 +82,11 @@
         <h2>Latest news</h2>
         {% for article in articles %}
             <article class="news-item">
-                <h3><a href="{{ article.url }}" target="_blank">{{ article.title }}</a></h3>
+                <h3>
+                    <a href="{{ article.url }}" target="_blank">
+                        {{ article.title }}
+                    </a>
+                </h3>
                 <p>{{ article.description }}</p>
             </article>
         {% empty %}
@@ -87,34 +96,79 @@
 </section>
 
 <script>
-    const companySelect = document.getElementById('companySelect');
-    const companyNameInput = document.getElementById('companyNameInput');
+    const rawLabels = {{ chart_labels|safe }};
+    const rawPrices = {{ chart_prices|safe }};
 
-    companySelect.addEventListener('change', function () {
-        const selectedOption = companySelect.options[companySelect.selectedIndex];
-        companyNameInput.value = selectedOption.dataset.name;
-    });
+    const isMobile = window.innerWidth <= 768;
 
-    const labels = {{ chart_labels|safe }};
-    const prices = {{ chart_prices|safe }};
+    const labels = isMobile ? rawLabels.slice(-7) : rawLabels;
+    const prices = isMobile ? rawPrices.slice(-7) : rawPrices;
 
-    new Chart(document.getElementById('stockChart'), {
-        type: 'line',
+    const ctx = document.getElementById("stockChart");
+
+    new Chart(ctx, {
+        type: "line",
         data: {
             labels: labels,
             datasets: [{
-                label: '{{ symbol }} close price',
+                label: "{{ symbol }} Closing Price",
                 data: prices,
-                tension: 0.25
+                tension: 0.45,
+                borderWidth: isMobile ? 4 : 3,
+                pointRadius: isMobile ? 0 : 3,
+                pointHoverRadius: isMobile ? 5 : 6,
+                pointHitRadius: 18,
+                fill: true,
             }]
         },
         options: {
             responsive: true,
+            maintainAspectRatio: false,
+            interaction: {
+                mode: "index",
+                intersect: false,
+            },
             plugins: {
-                legend: { display: true }
+                legend: {
+                    display: !isMobile,
+                },
+                tooltip: {
+                    displayColors: false,
+                    padding: 12,
+                }
+            },
+            scales: {
+                x: {
+                    ticks: {
+                        maxTicksLimit: isMobile ? 3 : 10,
+                        maxRotation: 0,
+                        minRotation: 0,
+                    },
+                    grid: {
+                        display: false,
+                    }
+                },
+                y: {
+                    ticks: {
+                        maxTicksLimit: isMobile ? 4 : 8,
+                    },
+                    grid: {
+                        drawBorder: false,
+                    }
+                }
             }
         }
     });
+
+    const companySelect = document.getElementById("companySelect");
+    const companyNameInput = document.getElementById("companyNameInput");
+
+    if (companySelect && companyNameInput) {
+        companySelect.addEventListener("change", function () {
+            const selectedOption = this.options[this.selectedIndex];
+            companyNameInput.value = selectedOption.dataset.name;
+        });
+    }
 </script>
 {% endif %}
 {% endblock %}

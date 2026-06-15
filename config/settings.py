@@ -7,7 +7,12 @@ load_dotenv(BASE_DIR / '.env')
 
 SECRET_KEY = os.getenv('SECRET_KEY', 'dev-only-secret-key')
 DEBUG = os.getenv('DEBUG', 'False') == 'True'
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
+ALLOWED_HOSTS = [
+    "austinarshadi.pythonanywhere.com",
+    "localhost",
+    "127.0.0.1",
+    "192.168.100.14"
+]
 
 INSTALLED_APPS = [
     'django.contrib.admin',
