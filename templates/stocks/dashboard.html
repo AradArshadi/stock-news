@@ -1,0 +1,120 @@
+{% extends 'base/base.html' %}
+
+{% block content %}
+<section class="hero">
+    <h1>Stock Intelligence Dashboard</h1>
+    <p>Pick a company from the default top-company list, view price movement, read news, and send an email alert.</p>
+</section>
+
+<form method="get" class="search-card">
+    <label>
+        Choose company
+        <select name="symbol" id="companySelect">
+            {% for company in companies %}
+                <option value="{{ company.symbol }}" data-name="{{ company.name }}" {% if company.symbol == symbol %}selected{% endif %}>
+                    {{ company.symbol }} — {{ company.name }}
+                </option>
+            {% endfor %}
+        </select>
+    </label>
+
+    <label>
+        Company name for news
+        <input type="text" id="companyNameInput" name="company_name" value="{{ company_name }}" placeholder="Tesla Inc.">
+    </label>
+
+    <button type="submit">Load dashboard</button>
+</form>
+
+{% if change %}
+<section class="metrics">
+    <div class="metric-card">
+        <span>Latest close</span>
+        <strong>${{ change.latest_close|floatformat:2 }}</strong>
+    </div>
+    <div class="metric-card">
+        <span>Daily change</span>
+        <strong>{{ change.percentage|floatformat:2 }}%</strong>
+    </div>
+    <div class="metric-card">
+        <span>Direction</span>
+        <strong>{{ change.direction|upper }}</strong>
+    </div>
+</section>
+
+<section class="panel">
+    <div class="panel-header">
+        <h2>{{ symbol }} price chart</h2>
+        <a class="email-button" href="?symbol={{ symbol }}&company_name={{ company_name|urlencode }}&send_email=1">Send email alert</a>
+    </div>
+    <canvas id="stockChart"></canvas>
+</section>
+
+<section class="grid">
+    <div class="panel">
+        <h2>Latest prices</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Close</th>
+                    <th>Volume</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for price in prices %}
+                    <tr>
+                        <td>{{ price.date }}</td>
+                        <td>${{ price.close|floatformat:2 }}</td>
+                        <td>{{ price.volume }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="panel">
+        <h2>Latest news</h2>
+        {% for article in articles %}
+            <article class="news-item">
+                <h3><a href="{{ article.url }}" target="_blank">{{ article.title }}</a></h3>
+                <p>{{ article.description }}</p>
+            </article>
+        {% empty %}
+            <p>No news found.</p>
+        {% endfor %}
+    </div>
+</section>
+
+<script>
+    const companySelect = document.getElementById('companySelect');
+    const companyNameInput = document.getElementById('companyNameInput');
+
+    companySelect.addEventListener('change', function () {
+        const selectedOption = companySelect.options[companySelect.selectedIndex];
+        companyNameInput.value = selectedOption.dataset.name;
+    });
+
+    const labels = {{ chart_labels|safe }};
+    const prices = {{ chart_prices|safe }};
+
+    new Chart(document.getElementById('stockChart'), {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: '{{ symbol }} close price',
+                data: prices,
+                tension: 0.25
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { display: true }
+            }
+        }
+    });
+</script>
+{% endif %}
+{% endblock %}

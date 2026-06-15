@@ -1,0 +1,30 @@
+* { box-sizing: border-box; }
+body { margin: 0; font-family: Arial, sans-serif; background: #0f172a; color: #e5e7eb; }
+a { color: #93c5fd; }
+.navbar { padding: 18px 32px; background: #020617; border-bottom: 1px solid #1e293b; }
+.brand { font-size: 24px; font-weight: 700; text-decoration: none; color: #fff; }
+.container { width: min(1180px, 92%); margin: 0 auto; padding: 32px 0; }
+.hero { margin-bottom: 24px; }
+.hero h1 { font-size: 44px; margin: 0 0 8px; }
+.hero p { color: #94a3b8; margin: 0; }
+.search-card, .panel, .metric-card { background: #111827; border: 1px solid #1f2937; border-radius: 18px; padding: 20px; }
+.search-card { display: grid; grid-template-columns: 1fr 1fr auto; gap: 16px; align-items: end; margin-bottom: 24px; }
+label { display: grid; gap: 8px; color: #cbd5e1; }
+input, select { padding: 12px 14px; border-radius: 12px; border: 1px solid #334155; background: #020617; color: #fff; width: 100%; }
+select { cursor: pointer; }
+button, .email-button { border: 0; background: #2563eb; color: #fff; padding: 12px 18px; border-radius: 12px; text-decoration: none; cursor: pointer; }
+.metrics { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 24px; }
+.metric-card span { color: #94a3b8; display: block; margin-bottom: 8px; }
+.metric-card strong { font-size: 28px; }
+.panel { margin-bottom: 24px; }
+.panel-header { display: flex; justify-content: space-between; align-items: center; gap: 16px; }
+.grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+table { width: 100%; border-collapse: collapse; }
+th, td { padding: 12px; border-bottom: 1px solid #1f2937; text-align: left; }
+.news-item { border-bottom: 1px solid #1f2937; padding: 12px 0; }
+.news-item h3 { margin: 0 0 8px; font-size: 18px; }
+.news-item p { color: #cbd5e1; margin: 0; }
+.message { padding: 12px 16px; border-radius: 12px; margin-bottom: 16px; }
+.message.success { background: #14532d; }
+.message.error { background: #7f1d1d; }
+@media (max-width: 800px) { .search-card, .metrics, .grid { grid-template-columns: 1fr; } }
