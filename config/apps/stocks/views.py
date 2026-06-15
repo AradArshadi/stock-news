@@ -4,7 +4,7 @@ from django.shortcuts import render
 from .models import Company, StockSearch
 from .services.alpha_vantage import get_daily_prices, calculate_percentage_change
 from .services.news_api import get_company_news
-from apps.alerts.services.email_alerts import send_stock_news_email
+from config.apps.alerts.services.email_alerts import send_stock_news_email
 
 
 DEFAULT_SYMBOL = "TSLA"
